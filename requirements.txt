@@ -1,0 +1,6 @@
+google-generativeai>=0.8.0
+google-genai>=0.1.0
+ttkbootstrap>=1.10.0
+python-dotenv>=1.0.0
+watchdog>=6.0.0
+Pillow>=10.0.0
