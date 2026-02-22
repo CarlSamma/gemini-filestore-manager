@@ -24,8 +24,11 @@ from config import (
     APP_NAME, APP_VERSION, APP_MIN_WIDTH, APP_MIN_HEIGHT,
     THEME, THEMES, SHORTCUTS, MAX_CHAT_HISTORY,
     get_env_api_key, save_api_key, load_stores_data, save_stores_data,
-    LOGGING_CONFIG
+    LOGGING_CONFIG, COLORS, FONTS
 )
+from PIL import Image, ImageDraw
+from PIL import ImageTk
+import os
 from filestore_manager import FileStoreManager, FileInfo, UploadProgress, QueryResult
 from gui_components import (
     SmartFilePicker, MetadataForm, ChunkConfigForm,
@@ -46,6 +49,33 @@ class GeminiFileStoreApp:
         self.root.title(f"{APP_NAME} v{APP_VERSION}")
         self.root.geometry(f"{APP_MIN_WIDTH}x{APP_MIN_HEIGHT}")
         self.root.minsize(APP_MIN_WIDTH, APP_MIN_HEIGHT)
+        # Apply global background and basic styles to match example.html
+        try:
+            self.root.configure(bg=COLORS.get("bg", "#0d0d0d"))
+            # Configure common ttk styles
+            self.root.style.configure('TLabel', background=COLORS.get('bg'), foreground=COLORS.get('fg'), font=FONTS.get('mono'))
+            self.root.style.configure('TButton', font=FONTS.get('mono'))
+            self.root.style.configure('TLabelframe.Label', font=FONTS.get('heading'), foreground=COLORS.get('accent'))
+        except Exception:
+            pass
+
+        # Add subtle background text and grain overlay similar to example.html
+        try:
+            self._ensure_grain_image()
+            grain_path = Path(DATA_DIR) / "grain_overlay.png"
+            if grain_path.exists():
+                img = Image.open(grain_path)
+                self._grain_tk = ImageTk.PhotoImage(img)
+                grain_label = ttkb.Label(self.root, image=self._grain_tk)
+                grain_label.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+            # Background large text
+            bg_text = ttkb.Label(self.root, text="RAG NATIVO", font=(FONTS.get('heading', ("Helvetica", 20))[0], 72))
+            bg_text.configure(foreground="#ffffff", background=COLORS.get('bg'))
+            bg_text.place(relx=0.6, rely=0.55, anchor='center')
+            bg_text.lower()
+        except Exception:
+            pass
         
         # Application state
         self.manager: Optional[FileStoreManager] = None
@@ -89,6 +119,29 @@ class GeminiFileStoreApp:
         help_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Help", menu=help_menu)
         help_menu.add_command(label="About", command=self._show_about)
+
+    def _ensure_grain_image(self):
+        """Generate a subtle grain overlay image in the data folder if missing."""
+        try:
+            out_path = Path(DATA_DIR) / "grain_overlay.png"
+            if out_path.exists():
+                return
+
+            width, height = 1600, 1200
+            img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(img)
+            import random
+            for _ in range(30000):
+                x = random.randint(0, width - 1)
+                y = random.randint(0, height - 1)
+                alpha = random.randint(8, 30)
+                draw.point((x, y), fill=(196, 164, 124, alpha))
+
+            img = img.resize((int(width * 0.8), int(height * 0.8)))
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            img.save(out_path, format="PNG")
+        except Exception:
+            pass
     
     def _create_ui(self):
         """Create the main UI with notebook tabs."""
@@ -131,8 +184,8 @@ class GeminiFileStoreApp:
         header.pack(fill=X, pady=10)
         
         ttkb.Label(
-            header, text="File Search Stores", 
-            font=("Helvetica", 16, "bold")
+            header, text="File Search Stores",
+            font=(FONTS.get("heading", ("Helvetica", 12))[0], 16, "bold")
         ).pack(side=LEFT)
         
         ttkb.Button(
@@ -205,7 +258,7 @@ class GeminiFileStoreApp:
         tab = ttkb.Frame(self.notebook)
         
         # Scrollable canvas
-        canvas = tk.Canvas(tab, bg="#222222", highlightthickness=0)
+        canvas = tk.Canvas(tab, bg=COLORS.get("bg", "#222222"), highlightthickness=0)
         scrollbar = ttkb.Scrollbar(tab, orient=VERTICAL, command=canvas.yview)
         scroll_frame = ttkb.Frame(canvas)
         

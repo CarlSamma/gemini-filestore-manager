@@ -29,17 +29,25 @@ THEMES = ["darkly", "cyborg", "superhero", "solar", "vapor"]
 
 # Colors for dark theme
 COLORS = {
-    "primary": "#375a7f",
+    # Palette inspired by example.html (gold/bronze legal tone)
+    "primary": "#c4a47c",
     "secondary": "#444444",
     "success": "#00bc8c",
     "info": "#3498db",
     "warning": "#f39c12",
     "danger": "#e74c3c",
-    "light": "#f8f9fa",
-    "dark": "#222222",
-    "bg": "#222222",
-    "fg": "#ffffff",
-    "accent": "#3498db",
+    "light": "#e0e0e0",
+    "dark": "#0d0d0d",
+    "bg": "#0d0d0d",
+    "fg": "#e0e0e0",
+    "accent": "#c4a47c",
+    "grid": "rgba(196,164,124,0.1)",
+}
+
+# Preferred fonts (may fallback if not installed)
+FONTS = {
+    "heading": ("Space Grotesk", 12, "bold"),
+    "mono": ("Space Mono", 10),
 }
 
 # Chunking Configuration Defaults

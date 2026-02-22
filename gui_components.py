@@ -17,6 +17,8 @@ from config import (
     SUPPORTED_EXTENSIONS, METADATA_SCHEMA, CHUNK_DEFAULTS, 
     CHUNK_LIMITS, COLORS
 )
+from config import FONTS
+
 from filestore_manager import FileInfo, UploadProgress
 
 
@@ -557,9 +559,9 @@ class QueryResultsPanel(ttkb.Frame):
         self.response_text = tk.Text(
             response_frame,
             wrap=tk.WORD,
-            font=("Consolas", 10),
-            bg=COLORS["dark"],
-            fg=COLORS["light"],
+            font=FONTS.get("mono", ("Consolas", 10)),
+            bg=COLORS.get("dark", "#111111"),
+            fg=COLORS.get("light", "#e0e0e0"),
             padx=10,
             pady=10
         )
@@ -645,9 +647,9 @@ class LogPanel(ttkb.Frame):
         self.log_text = tk.Text(
             self,
             wrap=tk.WORD,
-            font=("Consolas", 9),
-            bg="#1a1a1a",
-            fg="#00ff00",
+            font=FONTS.get("mono", ("Consolas", 9)),
+            bg=COLORS.get("dark", "#111111"),
+            fg=COLORS.get("accent", "#00ff00"),
             padx=5,
             pady=5,
             height=15
@@ -661,10 +663,10 @@ class LogPanel(ttkb.Frame):
         self.log_text.config(yscrollcommand=scrollbar.set)
         
         # Tag configurations for log levels
-        self.log_text.tag_config("INFO", foreground="#00ff00")
-        self.log_text.tag_config("WARNING", foreground="#ffff00")
-        self.log_text.tag_config("ERROR", foreground="#ff0000")
-        self.log_text.tag_config("DEBUG", foreground="#00ffff")
+        self.log_text.tag_config("INFO", foreground=COLORS.get("light", "#e0e0e0"))
+        self.log_text.tag_config("WARNING", foreground=COLORS.get("warning", "#f39c12"))
+        self.log_text.tag_config("ERROR", foreground=COLORS.get("danger", "#e74c3c"))
+        self.log_text.tag_config("DEBUG", foreground=COLORS.get("info", "#3498db"))
     
     def log(self, message: str, level: str = "INFO"):
         """Add a log message."""

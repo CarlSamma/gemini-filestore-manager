@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pianificazione App: Legal Intelligence Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Space+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --text: #e0e0e0;
+            --accent: #c4a47c;
+            /* Gold/Bronze legal tone */
+            --grid: rgba(196, 164, 124, 0.1);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            margin: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.4;
+        }
+
+        .bg-text {
+            position: fixed;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15vw;
+            color: rgba(255, 255, 255, 0.03);
+            z-index: -1;
+            bottom: -2vh;
+            right: -2vw;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
+        .container {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .nav-item {
+            margin-bottom: 2rem;
+            border-left: 2px solid var(--accent);
+            padding-left: 1.5rem;
+        }
+
+        small {
+            color: var(--accent);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        b {
+            color: var(--accent);
+        }
+
+        .citation {
+            font-size: 0.7rem;
+            vertical-align: super;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .meta-box {
+            background: rgba(196, 164, 124, 0.05);
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px dashed var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+    <svg class="grain-overlay">
+        <filter id="pulp-grain">
+            <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+            <feComponentTransfer>
+                <feFuncR type="linear" slope="0.3" />
+                <feFuncG type="linear" slope="0.3" />
+                <feFuncB type="linear" slope="0.3" />
+            </feComponentTransfer>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#pulp-grain)" />
+    </svg>
+
+    <div class="bg-text">RAG NATIVO</div>
+
+    <div class="container">
+        <h1>Pianificazione App: Legal AI Search</h1>
+        <p>Progetto per un'applicazione di <b>Retrieval-Augmented Generation (RAG)</b> completamente gestita,
+            ottimizzata per studi legali civili e conformata alle specifiche dell'API Gemini.</p>
+
+        <div class="nav-item">
+            <small>01</small>
+            <h2>Architettura del Sistema</h2>
+            <p>L'app utilizzerà il <b>File Search Tool</b> per eliminare la complessità della gestione manuale di
+                database vettoriali e pipeline di embedding.
+                L'infrastruttura si baserà su modelli <b>Gemini 3 Pro</b> o <b>2.5 Flash</b> per garantire latenze
+                ottimali sotto i 2 secondi.
+                Gli store di ricerca saranno <b>persistenti</b>, permettendo l'accumulo di conoscenza istituzionale
+                senza scadenze temporali.</p>
+        </div>
+
+        <div class="nav-item">
+            <small>02</small>
+            <h2>Gestione Metadati e Fascicoli</h2>
+            <p>Ogni "Fascicolo" corrisponderà a un <b>File Search Store</b> univoco. I documenti (PDF, DOCX, sentenze
+                scansionate tramite OCR nativo) verranno taggati con metadati chiave:</p>
+            <div class="meta-box">
+                - <b>numero_rg:</b> Identificativo del procedimento.<br>
+                - <b>tipo_atto:</b> Citazione, Comparsa, Verbale o Sentenza.<br>
+                - <b>anno:</b> Filtro temporale per la giurisprudenza interna.<br>
+                - <b>cliente:</b> Associazione univoca al fascicolo di parte.
+            </div>
+        </div>
+
+        <div class="nav-item">
+            <small>03</small>
+            <h2>Workflow Operativo</h2>
+            <p>L'applicazione seguirà un ciclo asincrono: caricamento dei file tramite
+                <code>upload_to_file_search_store</code>, monitoraggio dell'indicizzazione tramite
+                <code>operation.done</code> e successiva interrogazione semantica.
+                L'utente potrà interrogare il sistema in linguaggio naturale; Gemini decomporrà la query, eseguirà una
+                ricerca semantica basata sul modello <b>gemini-embedding-001</b> e inietterà il contesto nel prompt
+                finale.
+            </p>
+        </div>
+
+        <div class="nav-item">
+            <small>04</small>
+            <h2>Interfaccia e Citazioni</h2>
+            <p>Elemento critico della GUI sarà il pannello delle <b>Citazioni</b>. Grazie all'attributo
+                <code>grounding_metadata</code>, l'avvocato riceverà risposte verificate con riferimenti diretti alle
+                parti dei documenti sorgente, eliminando il rischio di allucinazioni.
+                L'app implementerà il pattern <b>"Agent-as-a-Tool"</b> per alternare la ricerca nei fascicoli locali e
+                la ricerca web, data l'attuale incompatibilità tecnica tra i due strumenti in una singola chiamata.
+            </p>
+        </div>
+
+        <div class="nav-item">
+            <small>05</small>
+            <h2>Costi e Limiti</h2>
+            <p>L'archiviazione e la generazione di embedding al momento della query saranno <b>senza costi</b>.
+                Lo studio pagherà solo l'indicizzazione iniziale (<b>$0,15 per 1 milione di token</b>) e il normale
+                consumo di token di input/output.
+                Il limite per singolo file è fissato a <b>100 MB</b>, con una raccomandazione di mantenere ogni store
+                sotto i 20 GB per performance d'élite.</p>
+        </div>
+    </div>
+</body>
+
+</html>
